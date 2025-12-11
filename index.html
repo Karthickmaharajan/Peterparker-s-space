@@ -1,1489 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>GTA 6 – Product Manager Tycoon</title>
-  <style>
-    :root {
-      --bg: #f5f5f7;
-      --card-bg: #ffffff;
-      --card-subtle: #f9f9fb;
-      --border-subtle: #e2e2e7;
-      --border-strong: #d0d0d7;
-      --accent: #007aff;
-      --accent-soft: rgba(0, 122, 255, 0.08);
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --text-soft: #9ca3af;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --success: #10b981;
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-    }
-
-    body {
-      background: radial-gradient(circle at top, #fdfdfd 0, #f5f5f7 40%, #e5e7eb 100%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .app-shell {
-      width: 100%;
-      max-width: 1320px;
-      background: rgba(255, 255, 255, 0.94);
-      border-radius: 28px;
-      border: 1px solid rgba(209, 213, 219, 0.8);
-      box-shadow: var(--shadow-soft);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      backdrop-filter: blur(18px);
-    }
-
-    header.app-header {
-      padding: 16px 22px;
-      border-bottom: 1px solid rgba(229, 231, 235, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      background: linear-gradient(135deg, rgba(249, 250, 251, 0.9), rgba(243, 244, 246, 0.98));
-    }
-
-    .brand-block {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 30% 20%, #ffffff 0, #e5e7eb 40%, #111827 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #f9fafb;
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .brand-title {
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      font-size: 15px;
-      text-transform: uppercase;
-    }
-
-    .brand-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      background: #ffffff;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pill-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--accent);
-    }
-
-    .pill.soft {
-      background: var(--accent-soft);
-      border-color: rgba(0, 122, 255, 0.18);
-      color: #024079;
-    }
-
-    .main-layout {
-      display: grid;
-      grid-template-columns: 3fr 3fr 3fr;
-      gap: 14px;
-      padding: 16px 18px 12px 18px;
-      border-bottom: 1px solid rgba(229, 231, 235, 0.9);
-    }
-
-    .column {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
-      padding: 14px 14px 13px 14px;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .card-tag {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .scenario-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .scenario-phase {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 4px;
-    }
-
-    .scenario-body {
-      font-size: 13px;
-      color: var(--text-main);
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-
-    .scenario-flavor {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .decision-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .decision-btn {
-      width: 100%;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-subtle);
-      background: linear-gradient(135deg, #ffffff, #f9fafb);
-      padding: 9px 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      cursor: pointer;
-      text-align: left;
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, border-color 0.08s ease-out, background 0.08s ease-out;
-    }
-
-    .decision-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 30px rgba(148, 163, 184, 0.4);
-      border-color: var(--accent);
-      background: linear-gradient(135deg, #ffffff, #eff6ff);
-    }
-
-    .decision-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .decision-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .decision-hint {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .kpi-card {
-      border-radius: var(--radius-md);
-      background: var(--card-subtle);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      padding: 8px 9px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      font-size: 11px;
-    }
-
-    .kpi-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .kpi-label {
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-size: 10px;
-    }
-
-    .kpi-value {
-      font-weight: 600;
-      font-size: 12px;
-      color: var(--text-main);
-    }
-
-    .kpi-bar {
-      position: relative;
-      width: 100%;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(209, 213, 219, 0.6);
-      overflow: hidden;
-      margin-top: 4px;
-    }
-
-    .kpi-bar-inner {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 40%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(0, 122, 255, 0.1), rgba(0, 122, 255, 0.8));
-      transition: width 0.2s ease-out;
-    }
-
-    .kpi-foot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 2px;
-    }
-
-    .kpi-foot span {
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .trend-up {
-      color: var(--success);
-    }
-
-    .trend-down {
-      color: var(--danger);
-    }
-
-    .log-card {
-      max-height: 180px;
-      overflow-y: auto;
-      font-size: 11px;
-      background: var(--card-subtle);
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      padding: 8px;
-    }
-
-    .log-entry {
-      margin-bottom: 6px;
-      color: var(--text-muted);
-      line-height: 1.3;
-    }
-
-    .log-entry span {
-      color: var(--text-soft);
-      margin-right: 4px;
-    }
-
-    .footer-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 18px 12px 18px;
-      font-size: 12px;
-      color: var(--text-muted);
-      background: linear-gradient(90deg, #f9fafb, #f3f4f6);
-    }
-
-    .status-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .status-chip {
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      background: #ffffff;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--success);
-    }
-
-    .status-dot.danger {
-      background: var(--danger);
-    }
-
-    .status-dot.warn {
-      background: var(--warning);
-    }
-
-    .button-outline {
-      border-radius: 999px;
-      border: 1px solid var(--border-strong);
-      background: #ffffff;
-      padding: 6px 12px;
-      font-size: 11px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: background 0.12s ease-out, border-color 0.12s ease-out, transform 0.08s ease-out, box-shadow 0.08s ease-out;
-    }
-
-    .button-outline:hover {
-      background: #f3f4f6;
-      border-color: var(--accent);
-      box-shadow: 0 10px 20px rgba(148, 163, 184, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .summary-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      padding: 16px;
-    }
-
-    .summary-dialog {
-      max-width: 620px;
-      width: 100%;
-      background: #ffffff;
-      border-radius: 24px;
-      border: 1px solid var(--border-strong);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.65);
-      padding: 18px 18px 16px 18px;
-    }
-
-    .summary-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .summary-title {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .summary-rating {
-      font-size: 13px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: #024079;
-      border: 1px solid rgba(0, 122, 255, 0.25);
-    }
-
-    .summary-body {
-      font-size: 13px;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .summary-item {
-      background: var(--card-subtle);
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      padding: 8px 9px;
-      font-size: 12px;
-    }
-
-    .summary-item span {
-      display: block;
-      font-size: 11px;
-      color: var(--text-soft);
-      margin-bottom: 2px;
-    }
-
-    .summary-epilogue {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 4px;
-    }
-
-    .summary-actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 10px;
-      gap: 8px;
-    }
-
-    .button-primary {
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(135deg, #007aff, #2563eb);
-      color: #ffffff;
-      padding: 7px 14px;
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
-    }
-
-    .button-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 16px 36px rgba(37, 99, 235, 0.7);
-    }
-
-    @media (max-width: 980px) {
-      .main-layout {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    @media (max-width: 640px) {
-      body {
-        padding: 10px;
-      }
-      .app-shell {
-        border-radius: 18px;
-      }
-      header.app-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .header-right {
-        align-self: stretch;
-        justify-content: space-between;
-      }
-      .summary-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GTA 6 - Product Manager Tycoon: A narrative decision-making game">
+  <title>GTA 6 - Product Manager Tycoon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-shell">
-    <header class="app-header">
-      <div class="brand-block">
-        <div class="brand-icon">G6</div>
-        <div class="brand-text">
-          <div class="brand-title">GTA 6 – Product Manager Tycoon</div>
-          <div class="brand-subtitle" id="phase-label">Concept · Month 1</div>
-        </div>
-      </div>
-      <div class="header-right">
-        <div class="pill soft">
-          <div class="pill-dot"></div>
-          <span id="turn-label">Turn 1 · Pre-production</span>
-        </div>
-        <div class="pill">
-          <span>Mode: </span>
-          <strong>System / Management</strong>
-        </div>
-      </div>
-    </header>
 
-    <main class="main-layout">
-      <section class="column">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Scenario</div>
-            <div class="card-tag" id="scenario-phase-tag">Concept & Vision</div>
-          </div>
-          <div class="scenario-title" id="scenario-title"></div>
-          <div class="scenario-phase" id="scenario-phase"></div>
-          <div class="scenario-body" id="scenario-body"></div>
-          <div class="scenario-flavor" id="scenario-flavor"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Studio Log</div>
-            <div class="card-tag">Recent events</div>
-          </div>
-          <div class="log-card" id="log-box"></div>
-        </div>
-      </section>
-
-      <section class="column">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Decisions</div>
-            <div class="card-tag">Choose one per turn</div>
-          </div>
-          <div class="decision-list" id="decision-list"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Business Snapshot</div>
-            <div class="card-tag" id="business-summary-label">Pre-launch projections</div>
-          </div>
-          <div class="kpi-grid">
-            <div class="kpi-card">
-              <div class="kpi-top">
-                <div class="kpi-label">Player Base</div>
-                <div class="kpi-value" id="kpi-player-base">0 M</div>
-              </div>
-              <div class="kpi-bar">
-                <div class="kpi-bar-inner" id="bar-player-base"></div>
-              </div>
-              <div class="kpi-foot">
-                <span>Potential audience unlocked</span>
-                <span id="trend-player-base"></span>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-top">
-                <div class="kpi-label">Revenue</div>
-                <div class="kpi-value" id="kpi-revenue">$0 B</div>
-              </div>
-              <div class="kpi-bar">
-                <div class="kpi-bar-inner" id="bar-revenue"></div>
-              </div>
-              <div class="kpi-foot">
-                <span>From base game + post-launch</span>
-                <span id="trend-revenue"></span>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-top">
-                <div class="kpi-label">Feature Adoption</div>
-                <div class="kpi-value" id="kpi-adoption">0%</div>
-              </div>
-              <div class="kpi-bar">
-                <div class="kpi-bar-inner" id="bar-adoption"></div>
-              </div>
-              <div class="kpi-foot">
-                <span>Players touching your big bets</span>
-                <span id="trend-adoption"></span>
-              </div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-top">
-                <div class="kpi-label">Retention & Sentiment</div>
-                <div class="kpi-value" id="kpi-retention">0 / 0</div>
-              </div>
-              <div class="kpi-bar">
-                <div class="kpi-bar-inner" id="bar-retention"></div>
-              </div>
-              <div class="kpi-foot">
-                <span>Will they stay or uninstall?</span>
-                <span id="trend-retention"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="column">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Core Health</div>
-            <div class="card-tag">Studio & execution</div>
-          </div>
-          <div class="kpi-grid" id="core-kpi-grid">
-            <!-- Core KPIs injected by JS -->
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Phase Overview</div>
-            <div class="card-tag" id="phase-overview-label">Pre-production</div>
-          </div>
-          <div class="scenario-body" id="phase-overview-body">
-            Navigate each decision to balance hype, quality, morale, and money.
-            You’re judged on what ships, who stays, and how much cash is left.
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer-bar">
-      <div class="status-group">
-        <div class="status-chip">
-          <div class="status-dot" id="overall-status-dot"></div>
-          <div id="overall-status-text">Studio Status: Under control (for now)</div>
-        </div>
-        <div class="status-chip">
-          <div class="status-dot warn"></div>
-          <div id="risk-status-text">Risk: Moderate</div>
-        </div>
-      </div>
-      <div class="status-group">
-        <button class="button-outline" id="btn-show-summary">
-          View Score (end now)
-        </button>
-        <button class="button-outline" id="btn-restart">
-          Restart Simulation
-        </button>
-      </div>
-    </footer>
-  </div>
-
-  <div class="summary-overlay" id="summary-overlay">
-    <div class="summary-dialog">
-      <div class="summary-header">
-        <div class="summary-title">Final Report – GTA 6 Product Manager</div>
-        <div class="summary-rating" id="summary-rating">Rating: A · Rockstar PM</div>
-      </div>
-      <div class="summary-body" id="summary-body">
-        You steered GTA 6 through vision, chaos, launch, and everything in between.
-      </div>
-      <div class="summary-grid">
-        <div class="summary-item">
-          <span>Business Outcomes</span>
-          <div id="summary-business"></div>
-        </div>
-        <div class="summary-item">
-          <span>Player & Product</span>
-          <div id="summary-product"></div>
-        </div>
-        <div class="summary-item">
-          <span>Execution & Delivery</span>
-          <div id="summary-execution"></div>
-        </div>
-        <div class="summary-item">
-          <span>People & Trust</span>
-          <div id="summary-people"></div>
-        </div>
-      </div>
-      <div class="summary-epilogue" id="summary-epilogue"></div>
-      <div class="summary-actions">
-        <button class="button-outline" id="btn-close-summary">Close</button>
-        <button class="button-primary" id="btn-restart-summary">
-          Play Again
-        </button>
-      </div>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Calculating technical debt...</p>
+      <button id="skip-loading" class="skip-loading-btn" style="margin-top: 2rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Skip (if stuck)</button>
     </div>
   </div>
 
-  <script>
-    const clamp = (v) => Math.max(0, Math.min(100, v));
-
-    const coreMetricsConfig = [
-      { key: 'cash', label: 'Budget Remaining', goodHigh: true, description: 'How much fuel is left before finance calls.' },
-      { key: 'roadmap', label: 'Roadmap Progress', goodHigh: true, description: 'How much of the plan is actually shipped.' },
-      { key: 'quality', label: 'Quality / Stability', goodHigh: true, description: 'Bugs, crashes, and controller-throwing moments.' },
-      { key: 'techDebt', label: 'Technical Debt', goodHigh: false, description: 'How many deadlines you paid for with future pain.' },
-      { key: 'morale', label: 'Team Morale', goodHigh: true, description: 'How close the team is to a mass exodus.' },
-      { key: 'execPatience', label: 'Exec Patience', goodHigh: true, description: 'How much longer they’ll tolerate your decks.' },
-      { key: 'risk', label: 'Risk Level', goodHigh: false, description: 'The likelihood of “postmortem” entering your vocabulary.' },
-      { key: 'hype', label: 'Player Hype', goodHigh: true, description: 'How excited the world is for GTA 6.' }
-    ];
-
-    const steps = [
-      {
-        phase: 'Concept & Vision',
-        label: 'Define the GTA 6 Vision',
-        phaseLabel: 'Concept · Month 1',
-        description: 'Rockstar wants GTA 6 to be bold, modern, and somehow less controversial while still being GTA. So… impossible, basically.',
-        flavor: 'This is the most freedom you’ll ever have. Enjoy it before the spreadsheets arrive.',
-        decisions: [
-          {
-            label: 'Focus on a dense, modern Vice City with deep systemic gameplay',
-            desc: 'Constrain scope, but go hard on depth, immersion, and replayability.',
-            hint: '+Quality, +Retention, -Risk, modest hype.',
-            effects: { hype: +8, quality: +10, risk: -6, roadmap: +5, cash: -3, sentiment: +5 }
-          },
-          {
-            label: 'Pitch a sprawling multi-region epic with 3 protagonists',
-            desc: 'Bigger map, bigger cast, bigger headaches.',
-            hint: '+Hype, +Risk, +Tech debt.',
-            effects: { hype: +15, risk: +10, techDebt: +8, quality: -4, cash: -5 }
-          },
-          {
-            label: 'Position GTA 6 as a smaller, sharper, experimental entry',
-            desc: 'Take a bold bet on focused scope and new systems.',
-            hint: '+Exec trust, +Quality, -Initial hype.',
-            effects: { hype: -2, quality: +8, execPatience: +8, risk: -4, roadmap: +6 }
-          }
-        ]
-      },
-      {
-        phase: 'Player & Market',
-        label: 'Understand the Audience',
-        phaseLabel: 'Research · Month 3',
-        description: 'You need a clearer picture than “everyone with a console and unresolved issues”.',
-        flavor: 'Warning: players will say they want realism and then complain when driving feels hard.',
-        decisions: [
-          {
-            label: 'Run global player research with quant + qual studies',
-            desc: 'Invest in surveys, labs, and real-world patterns.',
-            hint: '+Sentiment, -Risk, -Cash.',
-            effects: { sentiment: +10, risk: -5, cash: -8, hype: +4 }
-          },
-          {
-            label: 'Lean heavily on past GTA data and gut feel',
-            desc: 'You are the persona, obviously.',
-            hint: 'Cheap, risky, slightly arrogant.',
-            effects: { sentiment: +2, risk: +4, cash: -2, execPatience: +2 }
-          },
-          {
-            label: 'Optimize solely for viral content and streamers',
-            desc: 'Design for clips, not depth.',
-            hint: '+Hype, -Retention.',
-            effects: { hype: +10, retention: -6, risk: +4 }
-          }
-        ]
-      },
-      {
-        phase: 'Scope & Pillars',
-        label: 'Lock Scope & Pillars',
-        phaseLabel: 'Pre-production · Month 6',
-        description: 'Everyone has ideas. Your job is to say “no” enough times that something actually ships.',
-        flavor: 'Scope creep is like gravity. You don’t beat it—you manage the fall.',
-        decisions: [
-          {
-            label: 'Limit pillars to 3: Heists, Living City, Co-op Chaos',
-            desc: 'Say “no” to everything that doesn’t serve these.',
-            hint: '+Roadmap, -Risk, +Quality.',
-            effects: { roadmap: +10, risk: -6, quality: +5, techDebt: -4, cash: -3 }
-          },
-          {
-            label: 'Try to ship every cool idea someone pitched',
-            desc: 'You get to be popular for about a week.',
-            hint: '+Hype, -Roadmap, +Tech debt.',
-            effects: { hype: +8, roadmap: -8, techDebt: +10, risk: +6, morale: -4 }
-          },
-          {
-            label: 'Defer some pillars to DLC and live ops',
-            desc: 'Stagger value delivery across post-launch.',
-            hint: '+Exec trust, +Revenue potential, -Initial hype.',
-            effects: { revenue: +5, execPatience: +6, hype: -3, roadmap: +4 }
-          }
-        ]
-      },
-      {
-        phase: 'Production',
-        label: 'Build the World & Systems',
-        phaseLabel: 'Production · Year 2',
-        description: 'Time to turn design docs into a living, breathing city that players will immediately try to break.',
-        flavor: 'Every new system is both a selling point and a future bug report.',
-        decisions: [
-          {
-            label: 'Invest heavily in AI & emergent city behaviors',
-            desc: 'Create moments players will talk about for years.',
-            hint: '+Adoption, +Retention, +Tech debt.',
-            effects: { adoption: +10, retention: +6, techDebt: +8, cash: -10, quality: +4 }
-          },
-          {
-            label: 'Focus on handcrafted missions and linear polish',
-            desc: 'Scripted experiences over sandbox chaos.',
-            hint: '+Quality, lower systemic risk.',
-            effects: { quality: +10, adoption: +4, risk: -4, cash: -6 }
-          },
-          {
-            label: 'Balance both, accepting longer production time',
-            desc: 'Try to walk the tightrope.',
-            hint: '+Quality, +Risk, -Cash, -Morale.',
-            effects: { quality: +8, adoption: +6, risk: +4, cash: -12, morale: -6 }
-          }
-        ]
-      },
-      {
-        phase: 'Team & Process',
-        label: 'Scale the Team',
-        phaseLabel: 'Production · Year 3',
-        description: 'The project needs more hands, but each new person also adds communication overhead.',
-        flavor: '“We’ll just add more people” has never gone wrong in software, right?',
-        decisions: [
-          {
-            label: 'Hire aggressively across content, tools, and QA',
-            desc: 'Throw talent at the problem.',
-            hint: '+Roadmap, -Cash, -Morale (if unmanaged).',
-            effects: { roadmap: +8, cash: -15, morale: -4, quality: +4 }
-          },
-          {
-            label: 'Grow slowly, emphasizing senior hires',
-            desc: 'Depth over headcount.',
-            hint: '+Quality, constrained output.',
-            effects: { quality: +8, roadmap: +3, cash: -8, risk: -2 }
-          },
-          {
-            label: 'Rely on outsourcing for non-core content',
-            desc: 'Hybrid model with external partners.',
-            hint: '+Roadmap, +Risk, potential sentiment issues.',
-            effects: { roadmap: +6, risk: +5, cash: -6, sentiment: -3 }
-          }
-        ]
-      },
-      {
-        phase: 'Polish & QA',
-        label: 'Handle Bugs & Polish',
-        phaseLabel: 'Pre-launch · Year 4',
-        description: 'The bug list now scrolls longer than the map itself.',
-        flavor: 'Every fix breaks three other things. It’s almost a feature now.',
-        decisions: [
-          {
-            label: 'Prioritize stability and performance on all platforms',
-            desc: 'Slow but safe approach.',
-            hint: '+Quality, -Cash, +Exec trust.',
-            effects: { quality: +12, risk: -8, techDebt: -10, cash: -10, execPatience: +4 }
-          },
-          {
-            label: 'Polish only the main path, accept edge-case chaos',
-            desc: 'Speed over perfection.',
-            hint: '+Timeline, +Risk.',
-            effects: { roadmap: +6, risk: +7, quality: -4, cash: -4 }
-          },
-          {
-            label: 'Crunch hard to hit the original release window',
-            desc: 'Ship on time, break some humans.',
-            hint: '+Exec trust, -Morale.',
-            effects: { roadmap: +10, morale: -15, risk: -2, execPatience: +5 }
-          }
-        ]
-      },
-      {
-        phase: 'Marketing',
-        label: 'Build Hype & Set Expectations',
-        phaseLabel: 'Marketing · Year 4',
-        description: 'Time to show the world what you’ve built—or at least the parts that won’t crash.',
-        flavor: 'Trailers sell dreams. Your job is to make them only mildly unrealistic.',
-        decisions: [
-          {
-            label: 'Release a polished vertical slice gameplay trailer',
-            desc: 'Show the real thing, but only the best bits.',
-            hint: '+Hype, +Sentiment, moderate cost.',
-            effects: { hype: +18, sentiment: +8, cash: -8, risk: -2 }
-          },
-          {
-            label: 'Drop a cinematic teaser with minimal gameplay',
-            desc: 'Mystery over clarity.',
-            hint: '+Hype, +Risk if reality differs.',
-            effects: { hype: +15, sentiment: +2, risk: +4, cash: -5 }
-          },
-          {
-            label: 'Overpromise with multiple feature-packed trailers',
-            desc: 'Marketing wins, future you loses.',
-            hint: '+Hype, -Sentiment post-launch.',
-            effects: { hype: +22, sentiment: -4, risk: +6, cash: -10 }
-          }
-        ]
-      },
-      {
-        phase: 'Launch',
-        label: 'Launch Strategy',
-        phaseLabel: 'Launch · Year 5',
-        description: 'After years of work, the launch date appears on the calendar like a boss fight.',
-        flavor: 'You only get one “first impression” tweetstorm.',
-        decisions: [
-          {
-            label: 'Delay slightly to ship a polished build',
-            desc: 'Take the PR hit, win long-term.',
-            hint: '-Hype short term, +Quality, +Sentiment.',
-            effects: { hype: -5, quality: +12, sentiment: +10, risk: -8, execPatience: -4 }
-          },
-          {
-            label: 'Ship on time, patch aggressively post-launch',
-            desc: 'Classic strategy.',
-            hint: '+Revenue early, +Risk and social backlash.',
-            effects: { hype: +8, revenue: +15, risk: +10, quality: -6, sentiment: -6 }
-          },
-          {
-            label: 'Soft launch in limited regions, then global',
-            desc: 'Stagger risk and learning.',
-            hint: '+Retention, +Insight, slower revenue.',
-            effects: { retention: +10, sentiment: +6, revenue: +8, risk: -4, hype: -3 }
-          }
-        ]
-      },
-      {
-        phase: 'Live Ops',
-        label: 'Post-launch Content & Monetization',
-        phaseLabel: 'Live Ops · Year 6',
-        description: 'The game is out. Now the question is how long you can keep it alive (and profitable).',
-        flavor: 'Welcome to the era of roadmaps, updates, and carefully worded patch notes.',
-        decisions: [
-          {
-            label: 'Focus on free quality-of-life updates & expansions',
-            desc: 'Win hearts, maybe sacrifice some short-term revenue.',
-            hint: '+Retention, +Sentiment, long-tail revenue.',
-            effects: { retention: +12, sentiment: +12, revenue: +10, cash: -6, adoption: +8 }
-          },
-          {
-            label: 'Aggressive monetization with cosmetics and boosts',
-            desc: 'Print money, risk trust.',
-            hint: '+Revenue, -Sentiment.',
-            effects: { revenue: +20, sentiment: -10, adoption: -4, risk: +6 }
-          },
-          {
-            label: 'Balanced cosmetic monetization with value DLC',
-            desc: 'Try to have it both ways.',
-            hint: '+Revenue, moderate sentiment boost.',
-            effects: { revenue: +15, sentiment: +4, adoption: +4, retention: +6 }
-          }
-        ]
-      }
-    ];
-
-    const randomEvents = [
-      {
-        text: 'A leaked clip goes viral. Fans are both hyped and weirdly focused on a trash can texture.',
-        effects: { hype: +8, risk: +3, sentiment: +2 }
-      },
-      {
-        text: 'Key senior engineer leaves for a startup promising “no meetings, just code”.',
-        effects: { morale: -6, techDebt: +4, risk: +4 }
-      },
-      {
-        text: 'Console certification flags performance issues in dense areas.',
-        effects: { quality: -6, risk: +6, execPatience: -4 }
-      },
-      {
-        text: 'Unexpected positive preview from a major outlet boosts confidence.',
-        effects: { sentiment: +8, hype: +6, execPatience: +4 }
-      },
-      {
-        text: 'Internal tools outage slows production for a month.',
-        effects: { roadmap: -5, morale: -3, risk: +3 }
-      }
-    ];
-
-    const initialState = () => ({
-      turn: 1,
-      stepIndex: 0,
-      hasLaunched: false,
-      metrics: {
-        cash: 80,
-        roadmap: 5,
-        quality: 40,
-        techDebt: 10,
-        morale: 75,
-        execPatience: 80,
-        risk: 25,
-        hype: 20,
-        retention: 40,
-        sentiment: 45,
-        playerBase: 10,
-        revenue: 0,
-        adoption: 10
-      },
-      lastMetrics: null,
-      log: [
-        'Simulation started. You are now the PM for GTA 6. Please keep hands inside the ride at all times.'
-      ],
-      finished: false
-    });
-
-    let state = initialState();
-
-    const phaseLabelEl = document.getElementById('phase-label');
-    const turnLabelEl = document.getElementById('turn-label');
-    const scenarioPhaseTagEl = document.getElementById('scenario-phase-tag');
-    const scenarioTitleEl = document.getElementById('scenario-title');
-    const scenarioPhaseEl = document.getElementById('scenario-phase');
-    const scenarioBodyEl = document.getElementById('scenario-body');
-    const scenarioFlavorEl = document.getElementById('scenario-flavor');
-    const decisionListEl = document.getElementById('decision-list');
-    const logBoxEl = document.getElementById('log-box');
-    const businessSummaryLabelEl = document.getElementById('business-summary-label');
-    const coreKpiGridEl = document.getElementById('core-kpi-grid');
-    const phaseOverviewLabelEl = document.getElementById('phase-overview-label');
-    const phaseOverviewBodyEl = document.getElementById('phase-overview-body');
-    const overallStatusDotEl = document.getElementById('overall-status-dot');
-    const overallStatusTextEl = document.getElementById('overall-status-text');
-    const riskStatusTextEl = document.getElementById('risk-status-text');
-    const btnRestartEl = document.getElementById('btn-restart');
-    const btnShowSummaryEl = document.getElementById('btn-show-summary');
-
-    const summaryOverlayEl = document.getElementById('summary-overlay');
-    const summaryRatingEl = document.getElementById('summary-rating');
-    const summaryBodyEl = document.getElementById('summary-body');
-    const summaryBusinessEl = document.getElementById('summary-business');
-    const summaryProductEl = document.getElementById('summary-product');
-    const summaryExecutionEl = document.getElementById('summary-execution');
-    const summaryPeopleEl = document.getElementById('summary-people');
-    const summaryEpilogueEl = document.getElementById('summary-epilogue');
-    const btnCloseSummaryEl = document.getElementById('btn-close-summary');
-    const btnRestartSummaryEl = document.getElementById('btn-restart-summary');
-
-    const kpiPlayerBaseEl = document.getElementById('kpi-player-base');
-    const barPlayerBaseEl = document.getElementById('bar-player-base');
-    const trendPlayerBaseEl = document.getElementById('trend-player-base');
-    const kpiRevenueEl = document.getElementById('kpi-revenue');
-    const barRevenueEl = document.getElementById('bar-revenue');
-    const trendRevenueEl = document.getElementById('trend-revenue');
-    const kpiAdoptionEl = document.getElementById('kpi-adoption');
-    const barAdoptionEl = document.getElementById('bar-adoption');
-    const trendAdoptionEl = document.getElementById('trend-adoption');
-    const kpiRetentionEl = document.getElementById('kpi-retention');
-    const barRetentionEl = document.getElementById('bar-retention');
-    const trendRetentionEl = document.getElementById('trend-retention');
-
-    function addLogEntry(text) {
-      state.log.push(text);
-      if (state.log.length > 40) state.log.shift();
-    }
-
-    function maybeRandomEvent() {
-      const chance = 0.35;
-      if (Math.random() < chance) {
-        const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-        applyMetricEffects(ev.effects);
-        addLogEntry(`Random event: ${ev.text}`);
-      }
-    }
-
-    function applyMetricEffects(effects) {
-      const m = state.metrics;
-      for (const [k, delta] of Object.entries(effects)) {
-        if (m.hasOwnProperty(k)) {
-          m[k] = clamp(m[k] + delta);
-        }
-      }
-    }
-
-    function runDerivedModel() {
-      const m = state.metrics;
-
-      const riskFromDebt = m.techDebt * 0.03;
-      m.risk = clamp(m.risk + riskFromDebt - m.quality * 0.02);
-
-      if (m.risk > 60) {
-        m.morale = clamp(m.morale - 3);
-      }
-      if (m.morale < 40) {
-        m.quality = clamp(m.quality - 2);
-      }
-
-      const execMood = (m.roadmap * 0.04 + m.quality * 0.03 + m.revenue * 0.05) - (m.risk * 0.04);
-      m.execPatience = clamp(m.execPatience + execMood * 0.2);
-
-      const phase = steps[Math.min(state.stepIndex, steps.length - 1)].phase;
-      const preLaunch = ['Concept & Vision', 'Player & Market', 'Scope & Pillars', 'Production', 'Team & Process', 'Polish & QA', 'Marketing'].includes(phase);
-      if (!state.hasLaunched && phase === 'Launch') {
-        state.hasLaunched = true;
-      }
-
-      if (!state.hasLaunched) {
-        const potential = (m.hype * 0.2 + m.sentiment * 0.1) / 10;
-        m.playerBase = clamp(m.playerBase + potential);
-      } else {
-        const growth = (m.hype * 0.12 + m.sentiment * 0.16 + m.retention * 0.18 + m.quality * 0.14) / 40;
-        const churn = (100 - m.retention) * 0.04 / 10;
-        m.playerBase = clamp(m.playerBase + growth - churn + m.adoption * 0.04 / 10);
-
-        const revenueLift = (m.playerBase * 0.18 + m.adoption * 0.1 + m.sentiment * 0.08) / 50;
-        m.revenue = clamp(m.revenue + revenueLift + (preLaunch ? 0 : 0.6));
-      }
-
-      const adoptionShift = (m.roadmap * 0.05 + m.quality * 0.04 + m.sentiment * 0.03) / 10;
-      m.adoption = clamp(m.adoption + adoptionShift - (m.risk * 0.02) / 10);
-
-      const retentionShift = (m.quality * 0.12 + m.adoption * 0.08 + m.sentiment * 0.1) / 20;
-      m.retention = clamp(m.retention + retentionShift - (m.risk * 0.06) / 10);
-
-      const sentimentShift = (m.quality * 0.06 + m.retention * 0.06 + m.hype * 0.04) / 20;
-      m.sentiment = clamp(m.sentiment + sentimentShift - (m.techDebt * 0.04) / 10);
-
-      const burn = preLaunch ? 4 : 2;
-      m.cash = clamp(m.cash - burn);
-    }
-
-    function handleDecision(decision) {
-      if (state.finished) return;
-
-      state.lastMetrics = { ...state.metrics };
-      applyMetricEffects(decision.effects);
-      runDerivedModel();
-      maybeRandomEvent();
-      state.turn += 1;
-      state.stepIndex += 1;
-
-      addLogEntry(`Decision: ${decision.label}`);
-
-      checkGameOver();
-      renderAll();
-    }
-
-    function checkGameOver() {
-      const m = state.metrics;
-      if (
-        m.cash <= 0 ||
-        m.execPatience <= 0 ||
-        m.morale <= 0 ||
-        m.risk >= 100 ||
-        state.stepIndex >= steps.length
-      ) {
-        state.finished = true;
-      }
-    }
-
-    function renderScenario() {
-      const step = steps[Math.min(state.stepIndex, steps.length - 1)];
-      phaseLabelEl.textContent = step.phaseLabel;
-      turnLabelEl.textContent = `Turn ${state.turn} · ${step.phase}`;
-      scenarioPhaseTagEl.textContent = step.phase;
-      scenarioTitleEl.textContent = step.label;
-      scenarioPhaseEl.textContent = step.phaseLabel;
-      scenarioBodyEl.textContent = step.description;
-      scenarioFlavorEl.textContent = step.flavor;
-
-      if (['Launch', 'Live Ops'].includes(step.phase)) {
-        businessSummaryLabelEl.textContent = 'Live business performance';
-      } else {
-        businessSummaryLabelEl.textContent = 'Pre-launch projections';
-      }
-
-      phaseOverviewLabelEl.textContent = step.phase;
-      phaseOverviewBodyEl.textContent = `You are in the "${step.phase}" phase. Decisions here will heavily influence ${
-        step.phase === 'Launch' ? 'launch reception, early revenue, and first-week sentiment.' :
-        step.phase === 'Live Ops' ? 'long-term revenue, retention, and franchise health.' :
-        'future quality, roadmap realism, and how many angry emails you will get.'
-      }`;
-    }
-
-    function renderDecisions() {
-      decisionListEl.innerHTML = '';
-      if (state.finished) {
-        const msg = document.createElement('div');
-        msg.style.fontSize = '12px';
-        msg.style.color = '#6b7280';
-        msg.textContent = 'Simulation has reached an end-state. View your score or restart to try a different path.';
-        decisionListEl.appendChild(msg);
-        return;
-      }
-
-      const step = steps[state.stepIndex];
-      step.decisions.forEach((d) => {
-        const btn = document.createElement('button');
-        btn.className = 'decision-btn';
-        btn.innerHTML = `
-          <div class="decision-label">${d.label}</div>
-          <div class="decision-desc">${d.desc}</div>
-          <div class="decision-hint">${d.hint}</div>
-        `;
-        btn.addEventListener('click', () => handleDecision(d));
-        decisionListEl.appendChild(btn);
-      });
-    }
-
-    function renderLog() {
-      logBoxEl.innerHTML = '';
-      state.log.forEach((entry, idx) => {
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        const span = document.createElement('span');
-        span.textContent = `#${idx + 1}`;
-        div.appendChild(span);
-        div.appendChild(document.createTextNode(entry));
-        logBoxEl.appendChild(div);
-      });
-      logBoxEl.scrollTop = logBoxEl.scrollHeight;
-    }
-
-    function diffTrend(key) {
-      if (!state.lastMetrics) return '';
-      const diff = state.metrics[key] - (state.lastMetrics[key] ?? 0);
-      if (Math.abs(diff) < 1.5) return '';
-      const sign = diff > 0 ? '+' : '';
-      const cls = diff > 0 ? 'trend-up' : 'trend-down';
-      return `<span class="${cls}">${sign}${diff.toFixed(0)}</span>`;
-    }
-
-    function renderBusinessKpis() {
-      const m = state.metrics;
-      const pbMillions = (m.playerBase / 100) * 80;
-      const revBillions = (m.revenue / 100) * 12;
-
-      kpiPlayerBaseEl.textContent = `${pbMillions.toFixed(1)} M`;
-      barPlayerBaseEl.style.width = `${m.playerBase}%`;
-      trendPlayerBaseEl.innerHTML = diffTrend('playerBase');
-
-      kpiRevenueEl.textContent = `$${revBillions.toFixed(2)} B`;
-      barRevenueEl.style.width = `${m.revenue}%`;
-      trendRevenueEl.innerHTML = diffTrend('revenue');
-
-      kpiAdoptionEl.textContent = `${m.adoption.toFixed(0)}%`;
-      barAdoptionEl.style.width = `${m.adoption}%`;
-      trendAdoptionEl.innerHTML = diffTrend('adoption');
-
-      kpiRetentionEl.textContent = `${m.retention.toFixed(0)}% / ${m.sentiment.toFixed(0)}`;
-      barRetentionEl.style.width = `${m.retention}%`;
-      trendRetentionEl.innerHTML = diffTrend('retention');
-    }
-
-    function renderCoreKpis() {
-      coreKpiGridEl.innerHTML = '';
-      const m = state.metrics;
-
-      coreMetricsConfig.forEach(cfg => {
-        const val = m[cfg.key];
-        const card = document.createElement('div');
-        card.className = 'kpi-card';
-
-        const top = document.createElement('div');
-        top.className = 'kpi-top';
-
-        const lab = document.createElement('div');
-        lab.className = 'kpi-label';
-        lab.textContent = cfg.label;
-
-        const value = document.createElement('div');
-        value.className = 'kpi-value';
-        value.textContent = `${val.toFixed(0)}/100`;
-
-        top.appendChild(lab);
-        top.appendChild(value);
-
-        const bar = document.createElement('div');
-        bar.className = 'kpi-bar';
-
-        const inner = document.createElement('div');
-        inner.className = 'kpi-bar-inner';
-        inner.style.width = `${val}%`;
-
-        const normalized = val / 100;
-        if (cfg.goodHigh) {
-          const r = Math.round(255 * (1 - normalized));
-          const g = Math.round(255 * normalized);
-          inner.style.background = `linear-gradient(90deg, rgb(0,122,255,0.25), rgb(${r},${g},255))`;
-        } else {
-          const r = Math.round(255 * normalized);
-          const g = Math.round(255 * (1 - normalized));
-          inner.style.background = `linear-gradient(90deg, rgb(248,113,113,0.7), rgb(${r},${g},80))`;
-        }
-
-        bar.appendChild(inner);
-
-        const foot = document.createElement('div');
-        foot.className = 'kpi-foot';
-
-        const desc = document.createElement('span');
-        desc.textContent = cfg.description;
-
-        const trend = document.createElement('span');
-        trend.innerHTML = diffTrend(cfg.key);
-
-        foot.appendChild(desc);
-        foot.appendChild(trend);
-
-        card.appendChild(top);
-        card.appendChild(bar);
-        card.appendChild(foot);
-
-        coreKpiGridEl.appendChild(card);
-      });
-    }
-
-    function renderStatus() {
-      const m = state.metrics;
-      let statusText = 'Studio Status: Under control (for now)';
-      let dotClass = '';
-      const risk = m.risk;
-      const cash = m.cash;
-      const morale = m.morale;
-      const exec = m.execPatience;
-
-      if (cash < 20 || morale < 30 || exec < 30 || risk > 70) {
-        statusText = 'Studio Status: On fire (metaphorically, for now)';
-        dotClass = 'danger';
-      } else if (cash < 40 || morale < 50 || exec < 50 || risk > 50) {
-        statusText = 'Studio Status: Fragile but fixable';
-        dotClass = 'warn';
-      }
-
-      overallStatusTextEl.textContent = statusText;
-      overallStatusDotEl.classList.remove('danger', 'warn');
-      if (dotClass) overallStatusDotEl.classList.add(dotClass);
-
-      if (risk > 70) {
-        riskStatusTextEl.textContent = `Risk: Critical (${risk.toFixed(0)}/100)`;
-      } else if (risk > 50) {
-        riskStatusTextEl.textContent = `Risk: High (${risk.toFixed(0)}/100)`;
-      } else if (risk > 30) {
-        riskStatusTextEl.textContent = `Risk: Moderate (${risk.toFixed(0)}/100)`;
-      } else {
-        riskStatusTextEl.textContent = `Risk: Low (${risk.toFixed(0)}/100)`;
-      }
-    }
-
-    function renderAll() {
-      renderScenario();
-      renderDecisions();
-      renderLog();
-      renderBusinessKpis();
-      renderCoreKpis();
-      renderStatus();
-    }
-
-    function computeScore() {
-      const m = state.metrics;
-      const businessScore = (m.revenue * 0.5 + m.playerBase * 0.3 + m.cash * 0.2);
-      const productScore = (m.quality * 0.4 + m.adoption * 0.3 + m.retention * 0.3);
-      const executionScore = (m.roadmap * 0.4 + (100 - m.techDebt) * 0.3 + (100 - m.risk) * 0.3);
-      const peopleScore = (m.morale * 0.5 + m.execPatience * 0.3 + m.sentiment * 0.2);
-
-      const overall = (businessScore + productScore + executionScore + peopleScore) / 4 / 100 * 100;
-
-      let rating = 'C · Barely Survived';
-      let epilogue = 'You got GTA 6 out the door, but the postmortem is longer than the design doc. You live to PM another day, somehow.';
-
-      if (overall >= 85) {
-        rating = 'S · Legendary Franchise Builder';
-        epilogue = 'You balanced vision, execution, and humanity. GTA 6 is a historic hit, the team still speaks to you, and finance sends you holiday gifts.';
-      } else if (overall >= 75) {
-        rating = 'A · Rockstar PM';
-        epilogue = 'GTA 6 crushed expectations. Sure, there were a few late nights and spicy tweets, but history will be kind to you.';
-      } else if (overall >= 65) {
-        rating = 'B · Solid Operator';
-        epilogue = 'It launched well, the money looks good, and only a handful of Reddit threads call you “the problem with modern games”. Respectable outcome.';
-      } else if (overall >= 50) {
-        rating = 'C · Barely Survived';
-        epilogue = 'Some things worked, some crashed, and some will live forever as memes. You survived, but your calendar now says “career reflection time”.';
-      } else if (overall >= 35) {
-        rating = 'D · Walking Postmortem';
-        epilogue = 'You’ve provided a rich learning experience… mostly for whoever replaces you. At least the documentary will be interesting.';
-      } else {
-        rating = 'F · Franchise Assassin';
-        epilogue = 'The board prefers not to say “disaster” out loud, but your NDA politely says it for them. GTA 7 will be someone else’s redemption arc.';
-      }
-
-      return {
-        rating,
-        businessScore: businessScore / 100 * 100,
-        productScore: productScore / 100 * 100,
-        executionScore: executionScore / 100 * 100,
-        peopleScore: peopleScore / 100 * 100,
-        epilogue
-      };
-    }
-
-    function showSummary() {
-      const { rating, businessScore, productScore, executionScore, peopleScore, epilogue } = computeScore();
-      const m = state.metrics;
-
-      summaryRatingEl.textContent = `Rating: ${rating}`;
-      summaryBodyEl.textContent = 'Here’s how your run as GTA 6 Product Manager stacked up across the big buckets.';
-
-      summaryBusinessEl.innerHTML =
-        `Player Base: ${(m.playerBase).toFixed(0)}/100<br>` +
-        `Revenue Index: ${(m.revenue).toFixed(0)}/100<br>` +
-        `Budget Remaining: ${(m.cash).toFixed(0)}/100<br>` +
-        `Business Score: ${businessScore.toFixed(1)}`;
-
-      summaryProductEl.innerHTML =
-        `Quality: ${m.quality.toFixed(0)}/100<br>` +
-        `Feature Adoption: ${m.adoption.toFixed(0)}%<br>` +
-        `Retention: ${m.retention.toFixed(0)}%<br>` +
-        `Product Score: ${productScore.toFixed(1)}`;
-
-      summaryExecutionEl.innerHTML =
-        `Roadmap Progress: ${m.roadmap.toFixed(0)}/100<br>` +
-        `Technical Debt: ${m.techDebt.toFixed(0)}/100<br>` +
-        `Risk: ${m.risk.toFixed(0)}/100<br>` +
-        `Execution Score: ${executionScore.toFixed(1)}`;
-
-      summaryPeopleEl.innerHTML =
-        `Team Morale: ${m.morale.toFixed(0)}/100<br>` +
-        `Exec Patience: ${m.execPatience.toFixed(0)}/100<br>` +
-        `Player Sentiment: ${m.sentiment.toFixed(0)}/100<br>` +
-        `People Score: ${peopleScore.toFixed(1)}`;
-
-      summaryEpilogueEl.textContent = epilogue;
-      summaryOverlayEl.style.display = 'flex';
-    }
-
-    function hideSummary() {
-      summaryOverlayEl.style.display = 'none';
-    }
-
-    btnRestartEl.addEventListener('click', () => {
-      state = initialState();
-      renderAll();
-      hideSummary();
-    });
-
-    btnShowSummaryEl.addEventListener('click', () => {
-      state.finished = true;
-      renderAll();
-      showSummary();
-    });
-
-    btnCloseSummaryEl.addEventListener('click', hideSummary);
-    btnRestartSummaryEl.addEventListener('click', () => {
-      state = initialState();
-      renderAll();
-      hideSummary();
-    });
-
-    renderAll();
-  </script>
+  <!-- Game Root -->
+  <div id="game-root" class="game-root hidden">
+
+    <!-- HUD Overlay (Always Visible) -->
+    <div id="hud-overlay" class="hud-overlay">
+
+      <!-- Top: Act & Turn Progress -->
+      <div class="act-indicator">
+        <div class="act-info">
+          <span id="act-name" class="act-name">Act 1: Concept & Vision</span>
+          <span id="turn-counter" class="turn-counter">Turn 1/15</span>
+        </div>
+        <div id="progress-bar" class="progress-bar">
+          <div id="progress-fill" class="progress-fill" style="width: 6.67%"></div>
+        </div>
+      </div>
+
+      <button id="restart-btn" class="restart-btn" title="Restart Game">🔄 Restart</button>
+
+      <!-- Left: Stakeholder Trust Bars -->
+      <div id="stakeholders-panel" class="stakeholders-panel">
+        <h3 class="panel-title">Stakeholders</h3>
+
+        <div class="stakeholder" data-stakeholder="cto">
+          <div class="stakeholder-header">
+            <span class="stakeholder-icon">💻</span>
+            <span class="stakeholder-name">CTO</span>
+            <span class="stakeholder-value" id="trust-cto">70</span>
+          </div>
+          <div class="trust-bar">
+            <div class="trust-fill" id="trust-fill-cto" style="width: 70%"></div>
+          </div>
+        </div>
+
+        <div class="stakeholder" data-stakeholder="creative">
+          <div class="stakeholder-header">
+            <span class="stakeholder-icon">🎨</span>
+            <span class="stakeholder-name">Creative Director</span>
+            <span class="stakeholder-value" id="trust-creative">70</span>
+          </div>
+          <div class="trust-bar">
+            <div class="trust-fill" id="trust-fill-creative" style="width: 70%"></div>
+          </div>
+        </div>
+
+        <div class="stakeholder" data-stakeholder="marketing">
+          <div class="stakeholder-header">
+            <span class="stakeholder-icon">📢</span>
+            <span class="stakeholder-name">Marketing Lead</span>
+            <span class="stakeholder-value" id="trust-marketing">70</span>
+          </div>
+          <div class="trust-bar">
+            <div class="trust-fill" id="trust-fill-marketing" style="width: 70%"></div>
+          </div>
+        </div>
+
+        <div class="stakeholder" data-stakeholder="cfo">
+          <div class="stakeholder-header">
+            <span class="stakeholder-icon">💰</span>
+            <span class="stakeholder-name">CFO</span>
+            <span class="stakeholder-value" id="trust-cfo">70</span>
+          </div>
+          <div class="trust-bar">
+            <div class="trust-fill" id="trust-fill-cfo" style="width: 70%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Metrics Panel -->
+      <div id="metrics-panel" class="metrics-panel">
+        <h3 class="panel-title">Metrics</h3>
+        <div id="metrics-container" class="metrics-container">
+          <!-- Dynamically populated based on turn -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scene Container (Main Content) -->
+    <div id="scene-container" class="scene-container">
+      <!-- Dynamically populated per turn -->
+      <div class="scene-intro">
+        <h1 class="game-title">GTA 6</h1>
+        <h2 class="game-subtitle">Product Manager Tycoon</h2>
+        <p class="game-tagline">15 turns. Infinite chaos.</p>
+        <button id="start-game-btn" class="start-btn">Begin</button>
+      </div>
+    </div>
+
+    <!-- Reactions Container (Floating Bubbles) -->
+    <div id="reactions-container" class="reactions-container">
+      <!-- Stakeholder reactions appear here -->
+    </div>
+
+    <!-- Insights Container (Toast Notifications) -->
+    <div id="insights-container" class="insights-toasts-container">
+      <!-- Insight toasts appear here -->
+    </div>
+
+    <!-- Roadmap Board Modal -->
+    <div id="roadmap-board" class="roadmap-board hidden">
+      <div class="roadmap-content glass">
+        <h2 class="roadmap-title">Roadmap Planning</h2>
+        <p class="roadmap-instructions">Drag features into columns. Choose wisely.</p>
+
+        <div class="roadmap-layout">
+
+          <!-- Available Features Pool -->
+          <div class="features-pool">
+            <h3>Available Features</h3>
+            <div id="features-list" class="features-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Drop Zones -->
+          <div class="drop-zones">
+
+            <div class="drop-zone" id="zone-build" data-zone="build">
+              <h3 class="zone-title">🚀 Build Now</h3>
+              <div class="zone-content">
+                <p class="zone-hint">Drop here</p>
+              </div>
+              <div class="zone-stats">
+                <span>Cost: <span id="build-cost">0</span></span>
+                <span>Value: <span id="build-value">0</span></span>
+              </div>
+            </div>
+
+            <div class="drop-zone" id="zone-later" data-zone="later">
+              <h3 class="zone-title">⏰ Build Later</h3>
+              <div class="zone-content">
+                <p class="zone-hint">Drop here</p>
+              </div>
+            </div>
+
+            <div class="drop-zone" id="zone-kill" data-zone="kill">
+              <h3 class="zone-title">❌ Kill</h3>
+              <div class="zone-content">
+                <p class="zone-hint">Drop here</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="roadmap-actions">
+          <button id="roadmap-submit" class="decision-btn">Lock It In</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Postmortem Overlay -->
+    <div id="postmortem" class="postmortem hidden">
+      <div class="postmortem-content glass">
+        <!-- Dynamically populated at turn 15 -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="background-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Music Control Button -->
+  <button id="music-toggle" class="music-toggle-btn" title="Toggle Music">
+    🔊
+  </button>
+
+  <script src="game.js"></script>
 </body>
 </html>
